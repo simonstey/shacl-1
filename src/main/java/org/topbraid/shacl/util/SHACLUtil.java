@@ -426,6 +426,8 @@ public class SHACLUtil {
 //				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
 //			}
 //			else{
+			// TODO replacing null with specific resource
+			
 				if(!(cleanedResults.contains(null, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(null, SH.message, res.listProperties(SH.message).toList().get(0).getString()))){
 					cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
 					System.out.println(res.toString()+res.getPropertyResourceValue(SH.focusNode)+res.listProperties(SH.message).toList().get(0).getString());

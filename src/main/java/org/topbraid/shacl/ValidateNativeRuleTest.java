@@ -66,10 +66,11 @@ public class ValidateNativeRuleTest extends TestCase {
 		// Run the validator and print results
 		Model results = ModelConstraintValidator.get().validateModel(dataset,
 				shapesGraphURI, null, false, null);
-		System.out.println(ModelPrinter.get().print(SHACLUtil.removeDuplicateResultMessages(results)));
+		System.out.println(ModelPrinter.get().print(results));
+		System.out.println(results.size());
 
-		// Expecting 6 constraint violations
-		assertEquals(6, results.listResourcesWithProperty(RDF.type, SH.Error)
+		// Expecting 5 constraint violations
+		assertEquals(5, results.listResourcesWithProperty(RDF.type, SH.Error)
 				.toList().size()
 				+ results.listResourcesWithProperty(RDF.type, SH.Warning)
 						.toList().size());

@@ -109,8 +109,8 @@ public class ModelConstraintValidator {
 				}
 			}
 		}
-
-		return results;
+System.out.println(SHACLUtil.removeDuplicateResultMessages(results).size());
+		return SHACLUtil.removeDuplicateResultMessages(results);
 	}
 	
 	/**

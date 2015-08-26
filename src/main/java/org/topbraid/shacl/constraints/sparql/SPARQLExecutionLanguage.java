@@ -170,7 +170,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		if(sizeBefore!=sizeAfter){
 			Set<Resource> subjects = constructedModel.listSubjects().toSet();
 			System.out.println(subjects.size()+""+constructedModel.listStatements().toList());
-			Model newResults = ModelFactory.createDefaultModel();
+	
 			
 			// reevaluate constraints for updated subjects
 
@@ -178,7 +178,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 				results.add(ResourceConstraintValidator.get().validateNode(dataset, shapesGraphURI, r.asNode(), null, null));
 			}
 
-			results = SHACLUtil.removeDuplicateResultMessages(results);
+			//results = SHACLUtil.removeDuplicateResultMessages(results);
 
 		}
 	}
@@ -273,7 +273,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 					focusNode != null ? focusNode.asNode() : resource.asNode());
 			SPINStatisticsManager.get().add(Collections.singletonList(stats));
 		}
-		results = SHACLUtil.removeDuplicateResultMessages(results);
+		//results = SHACLUtil.removeDuplicateResultMessages(results);
 	}
 
 
