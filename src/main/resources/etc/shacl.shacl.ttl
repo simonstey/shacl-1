@@ -1,11 +1,8 @@
 # baseURI: http://www.w3.org/ns/shacl
 
 # SHACL - Shapes Constraint Language
-<<<<<<< HEAD
-# Draft last edited on 2015-08-07
-=======
 # Draft last edited on 2015-08-24
->>>>>>> upstream/master
+
 # Created by the W3C RDF Data Shapes Working Group
 # Editor: Holger Knublauch <holger@topquadrant.com>
 
@@ -2059,10 +2056,9 @@ sh:detail a rdf:Property ; rdfs:label "detail" .
 sh:entailment a rdf:Property ; rdfs:label "entailment" .
 sh:extends a rdf:Property ; rdfs:label "extends" .
 sh:filterShape a rdf:Property ; rdfs:label "filter shape" .
-<<<<<<< HEAD
+
 sh:final a rdf:Property ; rdfs:label "final" .
-=======
->>>>>>> upstream/master
+
 sh:focusNode a rdf:Property ; rdfs:label "focus node" .
 sh:hasValue a rdf:Property ; rdfs:label "has value" .
 sh:ignoredProperties a rdf:Property ; rdfs:label "ignored properties" .
@@ -2093,11 +2089,10 @@ sh:qualifiedMinCount a rdf:Property ; rdfs:label "qualified min count" .
 sh:qualifiedValueShape a rdf:Property ; rdfs:label "qualified value shape" .
 sh:resultAnnotation a rdf:Property ; rdfs:label "result annotation" .
 sh:returnType a rdf:Property ; rdfs:label "return type" .
-<<<<<<< HEAD
+
 sh:rule a rdf:Property ; rdfs:label "rule" .
 sh:salience a rdf:Property ; rdfs:label "salience" .
-=======
->>>>>>> upstream/master
+
 sh:scope a rdf:Property ; rdfs:label "scope" .
 sh:scopeClass a rdf:Property ; rdfs:label "scope class" .
 sh:scopeTemplate a rdf:Property ; rdfs:label "scope template" .
@@ -2112,7 +2107,6 @@ sh:subject a rdf:Property ; rdfs:label "subject" .
 sh:valueClass a rdf:Property ; rdfs:label "value class" .
 sh:valueShape a rdf:Property ; rdfs:label "value shape" .
 sh:value a rdf:Property ; rdfs:label "value" .
-<<<<<<< HEAD
-=======
+
 sh:validationFunction a rdf:Property ; rdfs:label "validation function" .
->>>>>>> upstream/master
+

@@ -113,6 +113,76 @@ public class ModelConstraintValidator {
 		return results;
 	}
 	
+	/**
+	 * Validates all resources in a given Model, which is expected to be the default
+	 * graph of a given Dataset.
+	 * @param dataset  the Dataset to validate
+	 * @param shapesGraphURI  the URI of the shapes graph in the dataset
+	 * @param minSeverity  the minimum severity, e.g. sh:Error or null for all
+	 * @param filtered  true to exclude checking schema-level resources
+	 * @param monitor  an optional ProgressMonitor
+	 * @param rulesEvaluation  true to consider rules for evaluation
+	 * @return a Model containing violation results - empty if OK
+	 */
+	public Model validateModel(Dataset dataset, URI shapesGraphURI, Resource minSeverity, boolean filtered, ProgressMonitor monitor, boolean rulesEvaluation) throws InterruptedException {
+		
+		if(dataset.getDefaultModel() == null) {
+			throw new IllegalArgumentException("Dataset requires a default model");
+		}
+		
+		Model shapesModel = dataset.getNamedModel(shapesGraphURI.toString());
+		
+		if(monitor != null) {
+			monitor.subTask("Preparing execution plan");
+		}
+		
+
+		List<Property> constraintProperties = SHACLUtil.getAllConstraintProperties();
+		Map<Resource,List<SHACLConstraint>> map = buildShape2ConstraintsMap(shapesModel, dataset.getDefaultModel(), constraintProperties, filtered);
+
+		if(monitor != null) {
+			monitor.subTask("");
+		}
+		
+		if(monitor != null) {
+			monitor.beginTask("Validating constraints for " + map.size() + " shapes...", map.size());
+		}
+		
+		Model results = JenaUtil.createMemoryModel();
+
+		if(rulesEvaluation){
+			List<Property> ruleProperties = SHACLUtil.getAllRuleProperties();
+			Map<Resource,List<SHACLRule>> rulemap = buildShape2RulesMap(shapesModel, dataset.getDefaultModel(), ruleProperties, filtered);
+			if(monitor != null) {
+				monitor.subTask("");
+			}
+			
+			if(monitor != null) {
+				monitor.beginTask("Validating rules for " + rulemap.size() + " shapes...", rulemap.size());
+			}
+			
+			for(Resource shape : rulemap.keySet()) {
+				for(SHACLRule rule : rulemap.get(shape)) {
+					executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor, map);
+				}
+			}
+		}
+		
+		for(Resource shape : map.keySet()) {
+			for(SHACLConstraint constraint : map.get(shape)) {
+				validateConstraintForShape(dataset, shapesGraphURI, minSeverity, constraint, shape, results, monitor);
+				if(monitor != null) {
+					monitor.worked(1);
+					if(monitor.isCanceled()) {
+						throw new InterruptedException();
+					}
+				}
+			}
+		}
+
+		return results;
+	}
+	
 	
 	private Map<Resource,List<SHACLConstraint>> buildShape2ConstraintsMap(Model shapesModel, Model dataModel, List<Property> constraintProperties, boolean filtered) {
 		Map<Resource,List<SHACLConstraint>> map = new HashMap<Resource,List<SHACLConstraint>>();

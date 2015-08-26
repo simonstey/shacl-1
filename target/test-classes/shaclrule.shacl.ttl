@@ -31,43 +31,76 @@ ex:Rectangle
 	a sh:ShapeClass ;
 	rdfs:subClassOf rdfs:Resource ;
 	rdfs:label "Rectangle" ;
+	sh:rule [
+		rdfs:label "Infer area of ?this" ;
+		sh:sparql """
+			CONSTRUCT {
+				?this ex:area ?area .
+				?this ex:height 4.
+			}
+			WHERE {
+				?this ex:width ?width .
+				?this ex:height ?height .
+				BIND (?width * ?height AS ?area) .
+			}
+			"""
+	] ;
+	sh:constraint [
+		a sh:NativeConstraint ;
+		sh:message "Check inferred triple" ;
+		sh:predicate ex:area ;
+		rdfs:label "check area" ;
+		sh:sparql """
+			SELECT ?this WHERE {
+				?this ex:area ?height .
+				FILTER(?height > 0) .
+			}
+			"""
+	] ;
 	sh:property [
 		sh:predicate ex:height ;
 		sh:datatype xsd:integer ;
+		rdfs:label "check height" ;
 		sh:minCount 1 ;
 		sh:maxCount 1 ;
-		rdfs:label "height" ;
 		rdfs:comment "The height of the Rectangle." ;
 	] ;
 	sh:property [
-		sh:predicate ex:width ;
+		sh:predicate ex:area ;
 		sh:datatype xsd:integer ;
 		sh:minCount 1 ;
-		sh:maxCount 1 ;
-		rdfs:label "width" ;
-		rdfs:comment "The width of the Rectangle." ;
+		rdfs:label "mincount area" ;
+		rdfs:comment "The area of the Rectangle." ;
 	] ;
-	sh:property [
-		sh:predicate ex:creator ;
-		sh:maxCount 1 ;
-		sh:valueShape [
-			sh:property [
-				sh:predicate schema:email ;
-				sh:minCount 1 ;
-			] ;
-		] ;
-		sh:valueClass schema:Person ;
-		rdfs:label "creator" ;
-		rdfs:comment "The creator of the Rectangle." ;
-	] ;
-	sh:constraint [
-		a ex:PositivePropertyValueConstraint ;
-		arg:property ex:height ;
-	] ;
-	sh:constraint [
-		a ex:PositivePropertyValueConstraint ;
-		arg:property ex:width ;
-	] ;
+	# sh:property [
+		# sh:predicate ex:width ;
+		# sh:datatype xsd:integer ;
+		# sh:minCount 1 ;
+		# sh:maxCount 1 ;
+		# rdfs:label "width" ;
+		# rdfs:comment "The width of the Rectangle." ;
+	# ] ;
+	# sh:property [
+		# sh:predicate ex:creator ;
+		# sh:maxCount 1 ;
+		# sh:valueShape [
+			# sh:property [
+				# sh:predicate schema:email ;
+				# sh:minCount 1 ;
+			# ] ;
+		# ] ;
+		# sh:valueClass schema:Person ;
+		# rdfs:label "creator" ;
+		# rdfs:comment "The creator of the Rectangle." ;
+	# ] ;
+	# sh:constraint [
+		# a ex:PositivePropertyValueConstraint ;
+		# arg:property ex:height ;
+	# ] ;
+	# sh:constraint [
+		# a ex:PositivePropertyValueConstraint ;
+		# arg:property ex:width ;
+	# ] ;
 .
 
 ex:Square
@@ -119,13 +152,13 @@ ex:TestRectangle
 	rdfs:label "Test rectangle" ;
 .
 
-ex:PersonWithoutEmail
-	a schema:Person ;
-.
+# ex:PersonWithoutEmail
+	# a schema:Person ;
+# .
 
 ex:PersonWithEmail
 	a schema:Person ;
-	schema:email "john@example.com" ;
+	schema:email 1 ;
 .
 
 
@@ -155,22 +188,22 @@ ex:PositivePropertyValueConstraint
   
 # Functions -------------------------------------------------------------------
   
-ex:computeArea
-	a sh:Function ;
-	rdfs:subClassOf sh:Functions ;
-	rdfs:label "compute area" ;
-	rdfs:comment "Computes the area of a given rectangle (?arg1) as the product of its width and height." ;
-	sh:argument [
-		sh:predicate sh:arg1 ;
-		sh:valueClass ex:Rectangle ;
-		rdfs:comment "The rectangle whose area to compute." ;
-	] ;
-	sh:sparql """
-		SELECT ((?width * ?height) AS ?result)
-		WHERE {
-			?arg1 ex:width ?width .
-			?arg1 ex:height ?height .
-		}
-		""" ;
-	sh:returnType xsd:integer ;
-.
+# ex:computeArea
+	# a sh:Function ;
+	# rdfs:subClassOf sh:Functions ;
+	# rdfs:label "compute area" ;
+	# rdfs:comment "Computes the area of a given rectangle (?arg1) as the product of its width and height." ;
+	# sh:argument [
+		# sh:predicate sh:arg1 ;
+		# sh:valueClass ex:Rectangle ;
+		# rdfs:comment "The rectangle whose area to compute." ;
+	# ] ;
+	# sh:sparql """
+		# SELECT ((?width * ?height) AS ?result)
+		# WHERE {
+			# ?arg1 ex:width ?width .
+			# ?arg1 ex:height ?height .
+		# }
+		# """ ;
+	# sh:returnType xsd:integer ;
+# .
