@@ -32,11 +32,6 @@ public class TemplateConstraintExecutable extends ConstraintExecutable {
 		this.constraint = constraint;
 		this.template = template;
 	}
-	
-	
-	public SHACLTemplateConstraint getTemplateCall() {
-		return constraint;
-	}
 
 
 	public List<SHACLShape> getFilterShapes() {
@@ -48,19 +43,53 @@ public class TemplateConstraintExecutable extends ConstraintExecutable {
 	}
 	
 	
+	@Override
+	public Resource getSeverity() {
+		Resource override = JenaUtil.getResourceProperty(constraint, SH.severity);
+		if(override != null) {
+			return override;
+		}
+		else {
+			return super.getSeverity();
+		}
+	}
+
+
+	public SHACLTemplateConstraint getTemplateCall() {
+		return constraint;
+	}
+	
+	
+	public Resource getValidationFunction() {
+		if(JenaUtil.hasIndirectType(template, SH.PropertyValueConstraintTemplate) ||
+				JenaUtil.hasIndirectType(template, SH.InversePropertyValueConstraintTemplate)) {
+			return template.getPropertyResourceValue(SH.validationFunction);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
 	/**
 	 * Checks if all non-optional arguments are present.
+	 * Also returns false if the template is abstract and has at least one argument but no arguments are provided.
 	 * @return true  if complete
 	 */
 	public boolean isComplete() {
-		for(SHACLArgument arg : template.getArguments(false)) {
-			if(!arg.isOptional() && !constraint.hasProperty(arg.getPredicate()) && arg.getDefaultValue() == null) {
+		boolean hasDirectArgumentValue = false;
+		for(SHACLArgument arg : template.getArguments()) {
+			boolean hasValue = constraint.hasProperty(arg.getPredicate()) || arg.getDefaultValue() != null;
+			if(!arg.isOptional() && !hasValue) {
 				if(!(arg.hasProperty(SH.optionalWhenInherited, JenaDatatypes.TRUE) && arg.isOptionalAtTemplate(template))) {
 					return false;
 				}
 			}
+			if(hasValue && template.hasProperty(SH.argument, arg)) {
+				hasDirectArgumentValue = true;
+			}
 		}
-		return true;
+		return !template.isAbstract() || !template.hasProperty(SH.argument) || hasDirectArgumentValue;
 	}
 
 

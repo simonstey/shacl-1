@@ -1,6 +1,7 @@
 package org.topbraid.shacl.model;
 
 import org.topbraid.shacl.arq.functions.HasShapeFunction;
+import org.topbraid.shacl.arq.functions.ScopeContainsPFunction;
 import org.topbraid.shacl.model.impl.SHACLArgumentImpl;
 import org.topbraid.shacl.model.impl.SHACLConstraintViolationImpl;
 import org.topbraid.shacl.model.impl.SHACLFunctionImpl;
@@ -24,6 +25,7 @@ import com.hp.hpl.jena.enhanced.Personality;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class SHACLFactory {
@@ -49,11 +51,17 @@ public class SHACLFactory {
     	p.add(SHACLTemplateScope.class, new SimpleImplementation(SH.TemplateScope.asNode(), SHACLTemplateScopeImpl.class));
     	
 		FunctionRegistry.get().put(SH.hasShape.getURI(), HasShapeFunction.class);
+		PropertyFunctionRegistry.get().put(ScopeContainsPFunction.URI, ScopeContainsPFunction.class);
     }
 	
 	
 	public static SHACLArgument asArgument(RDFNode resource) {
 		return resource.as(SHACLArgument.class);
+	}
+	
+	
+	public static SHACLFunction asFunction(RDFNode resource) {
+		return resource.as(SHACLFunction.class);
 	}
 	
 	
@@ -126,12 +134,39 @@ public class SHACLFactory {
 	
 	
 	public static boolean isNativeScope(RDFNode node) {
-		if(node != null && node.isAnon()) {
-			if(((Resource)node).hasProperty(RDF.type, SH.NativeScope)) {
+		if(node != null) {
+			if(node.isAnon()) {
+				if(((Resource)node).hasProperty(RDF.type, SH.NativeScope)) {
+					return true;
+				}
+				if(!((Resource)node).hasProperty(RDF.type)) {
+					return SH.NativeScope.equals(SHACLUtil.getDefaultTemplateType((Resource)node));
+				}
+			}
+			else if(node.isURIResource()) {
+				return ((Resource)node).hasProperty(RDF.type, SH.NativeScope);
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Checks if a given node is a Shape.  Note this is just an approximation based
+	 * on a couple of hard-coded properties.  It should really rely on sh:defaultValueType.
+	 * @param node  the node to test
+	 * @return true if node is a Shape
+	 */
+	public static boolean isShape(RDFNode node) {
+		if(node instanceof Resource) {
+			if(JenaUtil.hasIndirectType((Resource)node, SH.Shape)) {
 				return true;
 			}
-			if(!((Resource)node).hasProperty(RDF.type)) {
-				return SH.NativeScope.equals(SHACLUtil.getDefaultTemplateType((Resource)node));
+			else if(node.isAnon() && !((Resource)node).hasProperty(RDF.type)) {
+				if(node.getModel().contains(null, SH.shape, node) ||
+						node.getModel().contains(null, SH.filterShape, node)) {
+					return true;
+				}
 			}
 		}
 		return false;

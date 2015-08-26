@@ -37,6 +37,8 @@ public class SH {
 
     public final static Resource CountConstraint = ResourceFactory.createResource(NS + "CountConstraint");
 
+    public final static Resource DefaultValueTypeRule = ResourceFactory.createResource(NS + "DefaultValueTypeRule");
+
     public final static Resource Error = ResourceFactory.createResource(NS + "Error");
 
     public final static Resource FatalError = ResourceFactory.createResource(NS + "FatalError");
@@ -48,6 +50,8 @@ public class SH {
     public final static Resource Graph = ResourceFactory.createResource(NS + "Graph");
 
     public final static Resource InversePropertyConstraint = ResourceFactory.createResource(NS + "InversePropertyConstraint");
+    
+    public final static Resource InversePropertyValueConstraintTemplate = ResourceFactory.createResource(NS + "InversePropertyValueConstraintTemplate");
 
     public final static Resource IRI = ResourceFactory.createResource(NS + "IRI");
 
@@ -68,6 +72,8 @@ public class SH {
     public final static Resource Path = ResourceFactory.createResource(NS + "Path");
     
     public final static Resource PropertyConstraint = ResourceFactory.createResource(NS + "PropertyConstraint");
+    
+    public final static Resource PropertyValueConstraintTemplate = ResourceFactory.createResource(NS + "PropertyValueConstraintTemplate");
 
     public final static Resource ReverseLinkPath = ResourceFactory.createResource(NS + "ReverseLinkPath");
 
@@ -94,6 +100,8 @@ public class SH {
     public final static Resource TemplateScope = ResourceFactory.createResource(NS + "TemplateScope");
 
     public final static Resource Templates = ResourceFactory.createResource(NS + "Templates");
+
+    public final static Resource text = ResourceFactory.createResource(NS + "text");
 
     public final static Resource Warning = ResourceFactory.createResource(NS + "Warning");
 
@@ -122,6 +130,8 @@ public class SH {
     
     public final static Property final_ = ResourceFactory.createProperty(NS + "final");
 
+    public final static Property focusNode = ResourceFactory.createProperty(NS + "focusNode");
+
     public final static Property graph = ResourceFactory.createProperty(NS + "graph");
 
     public final static Resource hasShape = ResourceFactory.createResource(NS + "hasShape");
@@ -132,6 +142,8 @@ public class SH {
     
     public final static Property include = ResourceFactory.createProperty(NS + "include");
 
+    public final static Property index = ResourceFactory.createProperty(NS + "index");
+
     public final static Property inverse = ResourceFactory.createProperty(NS + "inverse");
 
     public final static Property inverseProperty = ResourceFactory.createProperty(NS + "inverseProperty");
@@ -140,11 +152,19 @@ public class SH {
 
     public final static Property maxCount = ResourceFactory.createProperty(NS + "maxCount");
 
+    public final static Property maxExclusive = ResourceFactory.createProperty(NS + "maxExclusive");
+
+    public final static Property maxInclusive = ResourceFactory.createProperty(NS + "maxInclusive");
+
     public final static Property member = ResourceFactory.createProperty(NS + "member");
 
     public final static Property message = ResourceFactory.createProperty(NS + "message");
 
     public final static Property minCount = ResourceFactory.createProperty(NS + "minCount");
+
+    public final static Property minExclusive = ResourceFactory.createProperty(NS + "minExclusive");
+
+    public final static Property minInclusive = ResourceFactory.createProperty(NS + "minInclusive");
 
     public final static Property nodeShape = ResourceFactory.createProperty(NS + "nodeShape");
 
@@ -169,8 +189,6 @@ public class SH {
     public final static Property property = ResourceFactory.createProperty(NS + "property");
 
     public final static Property returnType = ResourceFactory.createProperty(NS + "returnType");
-
-    public final static Property root = ResourceFactory.createProperty(NS + "root");
     
     public final static Property rule = ResourceFactory.createProperty(NS + "rule");
     
@@ -182,15 +200,23 @@ public class SH {
     
     public final static Property severity = ResourceFactory.createProperty(NS + "severity");
     
+    public final static Property shape = ResourceFactory.createProperty(NS + "shape");
+    
     public final static Property shapes = ResourceFactory.createProperty(NS + "shapes");
 
     public final static Property shapesGraph = ResourceFactory.createProperty(NS + "shapesGraph");
 
-    public final static Property source = ResourceFactory.createProperty(NS + "source");
+    public final static Property sourceConstraint = ResourceFactory.createProperty(NS + "sourceConstraint");
+    
+    public final static Property sourceRule = ResourceFactory.createProperty(NS + "sourceRule");
+
+    public final static Property sourceShape = ResourceFactory.createProperty(NS + "sourceShape");
 
     public final static Property sparql = ResourceFactory.createProperty(NS + "sparql");
 
     public final static Property subject = ResourceFactory.createProperty(NS + "subject");
+    
+    public final static Property validationFunction = ResourceFactory.createProperty(NS + "validationFunction");
 
     public final static Property valueClass = ResourceFactory.createProperty(NS + "valueClass");
     
@@ -204,8 +230,6 @@ public class SH {
 	public static final Var objectVar = Var.alloc(object.getLocalName());
 
 	public static final Var predicateVar = Var.alloc(predicate.getLocalName());
-
-	public static final Var rootVar = Var.alloc(root.getLocalName());
 
 	public static final Var severityVar = Var.alloc(severity.getLocalName());
 	

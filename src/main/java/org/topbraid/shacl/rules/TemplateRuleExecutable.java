@@ -54,14 +54,19 @@ public class TemplateRuleExecutable extends RuleExecutable {
 	 * @return true  if complete
 	 */
 	public boolean isComplete() {
-		for(SHACLArgument arg : template.getArguments(false)) {
-			if(!arg.isOptional() && !rule.hasProperty(arg.getPredicate()) && arg.getDefaultValue() == null) {
+		boolean hasDirectArgumentValue = false;
+		for(SHACLArgument arg : template.getArguments()) {
+			boolean hasValue = rule.hasProperty(arg.getPredicate()) || arg.getDefaultValue() != null;
+			if(!arg.isOptional() && !hasValue) {
 				if(!(arg.hasProperty(SH.optionalWhenInherited, JenaDatatypes.TRUE) && arg.isOptionalAtTemplate(template))) {
 					return false;
 				}
 			}
+			if(hasValue && template.hasProperty(SH.argument, arg)) {
+				hasDirectArgumentValue = true;
+			}
 		}
-		return true;
+		return !template.isAbstract() || !template.hasProperty(SH.argument) || hasDirectArgumentValue;
 	}
 
 
