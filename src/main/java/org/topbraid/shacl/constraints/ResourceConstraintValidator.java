@@ -7,10 +7,13 @@ import java.util.Set;
 
 import org.topbraid.shacl.model.SHACLConstraint;
 import org.topbraid.shacl.model.SHACLFactory;
+import org.topbraid.shacl.model.SHACLRule;
 import org.topbraid.shacl.model.SHACLTemplateCall;
+import org.topbraid.shacl.rules.RuleExecutable;
 import org.topbraid.shacl.util.SHACLUtil;
 import org.topbraid.shacl.vocabulary.SH;
 import org.topbraid.spin.progress.ProgressMonitor;
+import org.topbraid.spin.system.SPINLabels;
 import org.topbraid.spin.util.JenaUtil;
 
 import com.hp.hpl.jena.graph.Node;
@@ -89,12 +92,14 @@ public class ResourceConstraintValidator {
 		
 		Model shapesModel = dataset.getNamedModel(shapesGraphURI.toString());
 		
-		List<Property> properties = SHACLUtil.getAllConstraintProperties();
-		
+		List<Property> properties = SHACLUtil.getAllConstraintAndRuleProperties();
+
 		Resource resource = (Resource) dataset.getDefaultModel().asRDFNode(focusNode);
 		Set<Resource> shapes = getShapesForResource(resource, dataset, shapesModel);
+
 		for(Resource shape : shapes) {
-			addResourceViolations(dataset, shapesGraphURI, focusNode, shape.asNode(), properties, minSeverity, results, monitor);
+			performRuleExecution(dataset, shapesGraphURI, focusNode, shape.asNode(), SHACLUtil.getAllRuleProperties(), minSeverity, results, monitor);
+			addResourceViolations(dataset, shapesGraphURI, focusNode, shape.asNode(), SHACLUtil.getAllConstraintProperties(), minSeverity, results, monitor);
 		}
 		
 		return results;
@@ -136,17 +141,32 @@ public class ResourceConstraintValidator {
 			}
 		}
 	}
+	
+	private void addQueryResults(Model results, 
+			SHACLRule rule,
+			Resource shape,
+			Resource focusNode,
+			Dataset dataset,
+			URI shapesGraphURI,
+			Resource minSeverity,
+			ProgressMonitor monitor) {
+		
+		for(RuleExecutable executable : rule.getExecutables()) {
+			ExecutionLanguage lang = ExecutionLanguageSelector.get().getLanguageForRule(executable);
+			lang.executeRule(dataset, shape, shapesGraphURI, rule, executable, null, results);
+		}
+	}
 
-
+	
 	private void addResourceViolations(Dataset dataset, URI shapesGraphURI, Node resourceNode, Node shapeNode,
-			List<Property> constraintProperties, Resource minSeverity, Model results,
+			List<Property> properties, Resource minSeverity, Model results,
 			ProgressMonitor monitor) {
 		
 		Resource resource = (Resource) dataset.getDefaultModel().asRDFNode(resourceNode);
 		Model shapesModel = dataset.getNamedModel(shapesGraphURI.toString());
 		Resource shape = (Resource) shapesModel.asRDFNode(shapeNode);
-		for(Property constraintProperty : constraintProperties) {
-			for(Resource c : JenaUtil.getResourceProperties(shape, constraintProperty)) {
+		for(Property property : properties) {
+			for(Resource c : JenaUtil.getResourceProperties(shape, property)) {
 				Resource type = JenaUtil.getType(c);
 				if(type == null && c.isAnon()) {
 					type = SHACLUtil.getDefaultTemplateType(c);
@@ -159,6 +179,33 @@ public class ResourceConstraintValidator {
 					else if(JenaUtil.hasIndirectType(type, SH.ConstraintTemplate)) {
 						SHACLConstraint constraint = SHACLFactory.asTemplateConstraint(c);
 						addQueryResults(results, constraint, shape, resource, dataset, shapesGraphURI, minSeverity, monitor);
+					}
+				}
+			}
+		}
+	}
+	
+	private void performRuleExecution(Dataset dataset, URI shapesGraphURI, Node resourceNode, Node shapeNode,
+			List<Property> properties, Resource minSeverity, Model results,
+			ProgressMonitor monitor) {
+		
+		Resource resource = (Resource) dataset.getDefaultModel().asRDFNode(resourceNode);
+		Model shapesModel = dataset.getNamedModel(shapesGraphURI.toString());
+		Resource shape = (Resource) shapesModel.asRDFNode(shapeNode);
+		for(Property property : properties) {
+			for(Resource c : JenaUtil.getResourceProperties(shape, property)) {
+				Resource type = JenaUtil.getType(c);
+				if(type == null && c.isAnon()) {
+					type = SHACLUtil.getDefaultTemplateType(c);
+				}
+				if(type != null) {
+					if(SH.NativeRule.equals(type)) {
+						SHACLRule rule = SHACLFactory.asNativeRule(c);
+						addQueryResults(results, rule, shape, resource, dataset, shapesGraphURI, minSeverity, monitor);
+					}
+					else if(JenaUtil.hasIndirectType(type, SH.RuleTemplate)) {
+						SHACLRule rule = SHACLFactory.asTemplateRule(c);
+						addQueryResults(results, rule, shape, resource, dataset, shapesGraphURI, minSeverity, monitor);
 					}
 				}
 			}

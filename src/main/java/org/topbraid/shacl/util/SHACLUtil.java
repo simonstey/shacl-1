@@ -15,12 +15,9 @@ import org.topbraid.shacl.model.SHACLConstraintViolation;
 import org.topbraid.shacl.model.SHACLFactory;
 import org.topbraid.shacl.model.SHACLNativeConstraint;
 import org.topbraid.shacl.model.SHACLPropertyConstraint;
-
 import org.topbraid.shacl.model.SHACLResource;
 import org.topbraid.shacl.model.SHACLRule;
-
 import org.topbraid.shacl.model.SHACLTemplateCall;
-
 import org.topbraid.shacl.vocabulary.SH;
 import org.topbraid.spin.arq.ARQFactory;
 import org.topbraid.spin.util.JenaUtil;
@@ -34,6 +31,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -69,6 +67,16 @@ public class SHACLUtil {
 		constraintProperties.add(SH.constraint);
 		constraintProperties.add(SH.inverseProperty);
 		constraintProperties.add(SH.property);
+		// TODO add pathConstraint
+	}
+	
+	private final static List<Property> constraintAndRuleProperties = new LinkedList<Property>();
+	static {
+		constraintAndRuleProperties.add(SH.argument);
+		constraintAndRuleProperties.add(SH.constraint);
+		constraintAndRuleProperties.add(SH.inverseProperty);
+		constraintAndRuleProperties.add(SH.property);
+		constraintAndRuleProperties.add(SH.rule);
 		// TODO add pathConstraint
 	}
 	
@@ -208,6 +216,10 @@ public class SHACLUtil {
 	
 	public static List<Property> getAllRuleProperties() {
 		return ruleProperties;
+	}
+	
+	public static List<Property> getAllConstraintAndRuleProperties() {
+		return constraintAndRuleProperties;
 	}
 	
 	
@@ -405,7 +417,26 @@ public class SHACLUtil {
 		return null;
 	}
 	
-	
+	public static Model removeDuplicateResultMessages(Model results) {
+		Model cleanedResults = ModelFactory.createDefaultModel();
+		
+		for(Resource res : results.listResourcesWithProperty(SH.sourceConstraint).toSet()){
+			
+//			if(cleanedResults.isEmpty()){
+//				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+//			}
+//			else{
+				if(!(cleanedResults.contains(null, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(null, SH.message, res.listProperties(SH.message).toList().get(0).getString()))){
+					cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+					System.out.println(res.toString()+res.getPropertyResourceValue(SH.focusNode)+res.listProperties(SH.message).toList().get(0).getString());
+				}
+					
+			//}
+		}
+			System.out.println("----");
+		return cleanedResults;
+		
+	}
 	
 	/**
 	 * Gets all the predicates of all declared sh:properties and sh:arguments

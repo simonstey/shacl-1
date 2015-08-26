@@ -1410,6 +1410,20 @@ sh:InversePropertyConstraint
 
 # Other Constraint Templates --------------------------------------------------
 
+sh:DerivedPropertyConstraint
+	a sh:ConstraintTemplate ;
+	rdfs:subClassOf sh:PropertyConstraint ;
+	rdfs:label "Derived property constraint" ;
+	rdfs:comment "Enforces a constraint that all values of the property must have a certain shape." ;
+	sh:property [
+		sh:predicate sh:inverseSPARQL  ;
+		sh:datatype xsd:string ;
+		sh:maxCount 1 ;
+		rdfs:label "inverse SPARQL" ;
+		rdfs:comment "The inverse SPARQL query to execute." ;
+	] ;
+.
+
 sh:ClosedShapeConstraint
 	a sh:ConstraintTemplate ;
 	rdfs:subClassOf sh:TemplateConstraint ;

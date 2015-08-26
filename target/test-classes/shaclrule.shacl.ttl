@@ -24,7 +24,6 @@
 	rdfs:comment "A simple example model demonstrating some key features of SHACL. Have a look at the ex:computeArea function, the rule attached to ex:Rectangle and the constraint attached to ex:Square." ;
 .
 
-
 # Classes ---------------------------------------------------------------------
 
 ex:Rectangle
@@ -36,7 +35,6 @@ ex:Rectangle
 		sh:sparql """
 			CONSTRUCT {
 				?this ex:area ?area .
-				?this ex:height 4.
 			}
 			WHERE {
 				?this ex:width ?width .
@@ -45,15 +43,15 @@ ex:Rectangle
 			}
 			"""
 	] ;
-	sh:constraint [
-		a sh:NativeConstraint ;
-		sh:message "Check inferred triple" ;
-		sh:predicate ex:area ;
-		rdfs:label "check area" ;
+	sh:rule [
+		rdfs:label "adding second height attribute" ;
 		sh:sparql """
-			SELECT ?this WHERE {
-				?this ex:area ?height .
-				FILTER(?height > 0) .
+			CONSTRUCT {
+				?this ex:height 4.
+			}
+			WHERE {
+				?this ex:width ?width .
+				?this ex:height ?height .
 			}
 			"""
 	] ;
@@ -107,6 +105,18 @@ ex:Square
 	a sh:ShapeClass ;
 	rdfs:label "Square" ;
 	rdfs:subClassOf ex:Rectangle ;
+	sh:constraint [
+		a sh:NativeConstraint ;
+		sh:message "Check inferred triple" ;
+		sh:predicate ex:area ;
+		rdfs:label "check area" ;
+		sh:sparql """
+			SELECT ?this WHERE {
+				?this ex:area ?area .
+				FILTER(?area > 0) .
+			}
+			"""
+	] ;
 	sh:constraint [
 		sh:message "Width and height of a Square must be equal" ;
 		sh:predicate ex:width ;

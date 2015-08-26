@@ -29,7 +29,7 @@ public interface ExecutionLanguage {
 	
 	void executeConstraint(Dataset dataset, Resource shape, URI shapesGraphURI, SHACLConstraint constraint, ConstraintExecutable executable, Resource focusNode, Model results);
 	// TODO check results for rule
-	void executeRule(Dataset dataset, Resource shape, URI shapesGraphURI, SHACLRule rule, RuleExecutable executable, Resource focusNode, Model results, Map<Resource,List<SHACLConstraint>> map);
+	void executeRule(Dataset dataset, Resource shape, URI shapesGraphURI, SHACLRule rule, RuleExecutable executable, Resource focusNode, Model results);
 	
 	Iterable<Resource> executeScope(Dataset dataset, Resource executable, SHACLTemplateCall templateCall);
 	

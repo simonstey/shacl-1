@@ -4,6 +4,7 @@ import org.topbraid.shacl.arq.functions.HasShapeFunction;
 import org.topbraid.shacl.arq.functions.ScopeContainsPFunction;
 import org.topbraid.shacl.model.impl.SHACLArgumentImpl;
 import org.topbraid.shacl.model.impl.SHACLConstraintViolationImpl;
+import org.topbraid.shacl.model.impl.SHACLDerivedPropertyConstraintImpl;
 import org.topbraid.shacl.model.impl.SHACLFunctionImpl;
 import org.topbraid.shacl.model.impl.SHACLNativeConstraintImpl;
 import org.topbraid.shacl.model.impl.SHACLNativeRuleImpl;
@@ -40,6 +41,7 @@ public class SHACLFactory {
     	p.add(SHACLConstraintViolation.class, new SimpleImplementation(SH.ConstraintViolation.asNode(), SHACLConstraintViolationImpl.class));
     	p.add(SHACLFunction.class, new SimpleImplementation(SH.Function.asNode(), SHACLFunctionImpl.class));
     	p.add(SHACLPropertyConstraint.class, new SimpleImplementation(SH.PropertyConstraint.asNode(), SHACLPropertyConstraintImpl.class));
+    	p.add(SHACLDerivedPropertyConstraint.class, new SimpleImplementation(SH.DerivedPropertyConstraint.asNode(), SHACLDerivedPropertyConstraintImpl.class));
     	p.add(SHACLShape.class, new SimpleImplementation(SH.Shape.asNode(), SHACLShapeImpl.class));
     	p.add(SHACLNativeConstraint.class, new SimpleImplementation(SH.NativeConstraint.asNode(), SHACLNativeConstraintImpl.class));
     	p.add(SHACLNativeRule.class, new SimpleImplementation(SH.NativeRule.asNode(), SHACLNativeRuleImpl.class));
@@ -83,6 +85,9 @@ public class SHACLFactory {
 		return node.as(SHACLPropertyConstraint.class);
 	}
 	
+	public static SHACLDerivedPropertyConstraint asDerivedPropertyConstraint(RDFNode node) {
+		return node.as(SHACLDerivedPropertyConstraint.class);
+	}
 	
 	public static SHACLShape asShape(RDFNode node) {
 		return node.as(SHACLShape.class);

@@ -95,7 +95,7 @@ public class ModelConstraintValidator {
 
 		for(Resource shape : rulemap.keySet()) {
 			for(SHACLRule rule : rulemap.get(shape)) {
-				executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor, map);
+				executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor);
 			}
 		}
 		for(Resource shape : map.keySet()) {
@@ -163,7 +163,7 @@ public class ModelConstraintValidator {
 			
 			for(Resource shape : rulemap.keySet()) {
 				for(SHACLRule rule : rulemap.get(shape)) {
-					executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor, map);
+					executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor);
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public class ModelConstraintValidator {
 		}
 	}
 	
-	private void executeRuleForShape(Dataset dataset, URI shapesGraphURI, SHACLRule rule, Resource shape, Model results, ProgressMonitor monitor, Map<Resource,List<SHACLConstraint>> map) {
+	private void executeRuleForShape(Dataset dataset, URI shapesGraphURI, SHACLRule rule, Resource shape, Model results, ProgressMonitor monitor) {
 		for(RuleExecutable executable : rule.getExecutables()) {
 			
 			//if(minSeverity == null || minSeverity.equals(severity) || JenaUtil.hasSuperClass(severity, minSeverity)) {
@@ -292,8 +292,8 @@ public class ModelConstraintValidator {
 					monitor.subTask("Executing Rules for Shape " + SPINLabels.get().getLabel(shape));
 				}
 				ExecutionLanguage lang = ExecutionLanguageSelector.get().getLanguageForRule(executable);
-				lang.executeRule(dataset, shape, shapesGraphURI, rule, executable, null, results, map);
-				
+				lang.executeRule(dataset, shape, shapesGraphURI, rule, executable, null, results);
+				// TODO maybe perform constraint evaluation of added triples here? 
 			//}
 		}
 	}

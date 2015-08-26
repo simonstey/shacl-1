@@ -58,8 +58,7 @@ public class FallbackExecutionLanguage implements ExecutionLanguage {
 	@Override
 	public void executeRule(Dataset dataset, Resource shape,
 			URI shapesGraphURI, SHACLRule rule, RuleExecutable executable,
-			Resource focusNode, Model results,
-			Map<Resource,List<SHACLConstraint>> map) {
+			Resource focusNode, Model results) {
 		Resource vio = results.createResource(SH.FatalError);
 		vio.addProperty(SH.message, "No execution language found for rule");
 		vio.addProperty(SH.sourceRule, rule);
