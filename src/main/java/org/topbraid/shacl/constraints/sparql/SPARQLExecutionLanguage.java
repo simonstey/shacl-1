@@ -163,15 +163,15 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		QueryExecution qexec = ARQFactory.get().createQueryExecution(query, dataset, bindings);
 
 		Model constructedModel = executeConstructQuery(qexec);
-		
+
 		// check whether new information was constructed
 		long sizeBefore = dataset.getDefaultModel().size();
 		dataset.getDefaultModel().add(constructedModel.listStatements());
 		long sizeAfter = dataset.getDefaultModel().size();
-		
+
 		if(sizeBefore!=sizeAfter){
 			Set<Resource> subjects = constructedModel.listSubjects().toSet();
-			
+
 			// reevaluate constraints for updated subjects
 			for(Resource r: subjects){
 				results.add(ResourceConstraintValidator.get().validateNode(dataset, shapesGraphURI, r.asNode(), null, null));
@@ -252,7 +252,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 
 		long startTime = System.currentTimeMillis();
 		int violationCount = executeSelectQuery(results, constraint, shape, focusNode, executable, qexec);
-		
+
 		if(SPINStatisticsManager.get().isRecording()) {
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;
@@ -299,49 +299,46 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 				selectMessage = ResourceFactory.createTypedLiteral("Fatal Error: Could not validate shape");
 			}
 
+			Resource vio = results.createResource(severity);
+			vio.addProperty(SH.sourceConstraint, constraint);
+			vio.addProperty(SH.sourceShape, shape);
 
-			
-
-				Resource vio = results.createResource(severity);
-				vio.addProperty(SH.sourceConstraint, constraint);
-				vio.addProperty(SH.sourceShape, shape);
-
-				if(selectMessage != null) {
-					vio.addProperty(SH.message, selectMessage);
+			if(selectMessage != null) {
+				vio.addProperty(SH.message, selectMessage);
+			}
+			else {
+				for(Literal defaultMessage : defaultMessages) {
+					vio.addProperty(SH.message, SPARQLSubstitutions.withSubstitutions(defaultMessage, sol));
 				}
-				else {
-					for(Literal defaultMessage : defaultMessages) {
-						vio.addProperty(SH.message, SPARQLSubstitutions.withSubstitutions(defaultMessage, sol));
-					}
-				}
+			}
 
-				RDFNode selectPath = sol.get(SH.predicateVar.getVarName());
-				if(selectPath instanceof Resource) {
-					vio.addProperty(SH.predicate, selectPath);
+			RDFNode selectPath = sol.get(SH.predicateVar.getVarName());
+			if(selectPath instanceof Resource) {
+				vio.addProperty(SH.predicate, selectPath);
+			}
+			else {
+				Resource path = executable.getPredicate();
+				if(path != null) {
+					vio.addProperty(SH.predicate, path);
 				}
-				else {
-					Resource path = executable.getPredicate();
-					if(path != null) {
-						vio.addProperty(SH.predicate, path);
-					}
-				}
+			}
 
-				RDFNode selectObject = sol.get(SH.objectVar.getVarName());
-				if(selectObject != null) {
-					vio.addProperty(SH.object, selectObject);
-				}
+			RDFNode selectObject = sol.get(SH.objectVar.getVarName());
+			if(selectObject != null) {
+				vio.addProperty(SH.object, selectObject);
+			}
 
-				RDFNode selectSubject = sol.get(SH.subjectVar.getVarName());
-				if(selectSubject instanceof Resource) {
-					vio.addProperty(SH.subject, selectSubject);
-				}
+			RDFNode selectSubject = sol.get(SH.subjectVar.getVarName());
+			if(selectSubject instanceof Resource) {
+				vio.addProperty(SH.subject, selectSubject);
+			}
 
-				RDFNode thisValue = sol.get(SH.thisVar.getVarName());
-				if(thisValue != null) {
-					vio.addProperty(SH.focusNode, thisValue);
-				}
+			RDFNode thisValue = sol.get(SH.thisVar.getVarName());
+			if(thisValue != null) {
+				vio.addProperty(SH.focusNode, thisValue);
+			}
 
-				violationCount++;
+			violationCount++;
 		}
 		qexec.close();
 
@@ -352,7 +349,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 
 		Model constructedModel = qexec.execConstruct();
 		qexec.close();
-			
+
 		return constructedModel;
 	}
 

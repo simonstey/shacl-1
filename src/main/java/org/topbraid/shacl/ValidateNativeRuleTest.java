@@ -66,11 +66,13 @@ public class ValidateNativeRuleTest extends TestCase {
 		// Run the validator and print results
 		Model results = ModelConstraintValidator.get().validateModel(dataset,
 				shapesGraphURI, null, false, null);
+		System.out.println("----------------------------------------");
+		System.out.println("Evaluating graph considering rules.");
+		System.out.println("----------------------------------------");
 		System.out.println(ModelPrinter.get().print(results));
-		System.out.println(results.size());
 
-		// Expecting 5 constraint violations
-		assertEquals(5, results.listResourcesWithProperty(RDF.type, SH.Error)
+		// Expecting 4 constraint violations
+		assertEquals(4, results.listResourcesWithProperty(RDF.type, SH.Error)
 				.toList().size()
 				+ results.listResourcesWithProperty(RDF.type, SH.Warning)
 						.toList().size());
@@ -112,7 +114,10 @@ public class ValidateNativeRuleTest extends TestCase {
 		// Run the validator and print results
 		Model results = ModelConstraintValidator.get().validateModel(dataset,
 				shapesGraphURI, null, false, null, false);
-		//System.out.println(ModelPrinter.get().print(results));
+		System.out.println("----------------------------------------");
+		System.out.println("Evaluating graph without rule support.");
+		System.out.println("----------------------------------------");
+		System.out.println(ModelPrinter.get().print(results));
 
 		// Expecting 4 constraint violations
 		assertEquals(4, results.listResourcesWithProperty(RDF.type, SH.Error)
