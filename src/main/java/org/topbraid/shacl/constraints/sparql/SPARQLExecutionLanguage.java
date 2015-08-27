@@ -163,23 +163,19 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		QueryExecution qexec = ARQFactory.get().createQueryExecution(query, dataset, bindings);
 
 		Model constructedModel = executeConstructQuery(qexec);
+		
+		// check whether new information was constructed
 		long sizeBefore = dataset.getDefaultModel().size();
 		dataset.getDefaultModel().add(constructedModel.listStatements());
 		long sizeAfter = dataset.getDefaultModel().size();
 		
 		if(sizeBefore!=sizeAfter){
 			Set<Resource> subjects = constructedModel.listSubjects().toSet();
-			System.out.println(subjects.size()+""+constructedModel.listStatements().toList());
-	
 			
 			// reevaluate constraints for updated subjects
-
 			for(Resource r: subjects){
 				results.add(ResourceConstraintValidator.get().validateNode(dataset, shapesGraphURI, r.asNode(), null, null));
 			}
-
-			//results = SHACLUtil.removeDuplicateResultMessages(results);
-
 		}
 	}
 
@@ -273,7 +269,6 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 					focusNode != null ? focusNode.asNode() : resource.asNode());
 			SPINStatisticsManager.get().add(Collections.singletonList(stats));
 		}
-		//results = SHACLUtil.removeDuplicateResultMessages(results);
 	}
 
 
@@ -305,15 +300,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 			}
 
 
-			RDFNode thisValue = sol.get(SH.thisVar.getVarName());
-			boolean duplicate= false;
-
-			//avoiding duplicate error messages
-			for(Resource res : results.listResourcesWithProperty(SH.sourceConstraint, constraint).toSet())
-				if(res.hasProperty(SH.focusNode, thisValue) && res.hasProperty(SH.message, selectMessage))
-					duplicate=true;
-
-			if(!duplicate){		
+			
 
 				Resource vio = results.createResource(severity);
 				vio.addProperty(SH.sourceConstraint, constraint);
@@ -349,13 +336,12 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 					vio.addProperty(SH.subject, selectSubject);
 				}
 
+				RDFNode thisValue = sol.get(SH.thisVar.getVarName());
 				if(thisValue != null) {
 					vio.addProperty(SH.focusNode, thisValue);
 				}
 
 				violationCount++;
-				duplicate=false;
-			}
 		}
 		qexec.close();
 

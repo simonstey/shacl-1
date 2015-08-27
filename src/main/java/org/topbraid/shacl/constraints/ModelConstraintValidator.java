@@ -109,7 +109,6 @@ public class ModelConstraintValidator {
 				}
 			}
 		}
-System.out.println(SHACLUtil.removeDuplicateResultMessages(results).size());
 		return SHACLUtil.removeDuplicateResultMessages(results);
 	}
 	
@@ -180,7 +179,7 @@ System.out.println(SHACLUtil.removeDuplicateResultMessages(results).size());
 			}
 		}
 
-		return results;
+		return SHACLUtil.removeDuplicateResultMessages(results);
 	}
 	
 	

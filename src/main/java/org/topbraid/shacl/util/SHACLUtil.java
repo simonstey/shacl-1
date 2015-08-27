@@ -417,23 +417,26 @@ public class SHACLUtil {
 		return null;
 	}
 	
+	
 	public static Model removeDuplicateResultMessages(Model results) {
 		Model cleanedResults = ModelFactory.createDefaultModel();
-		
+		boolean isDuplicate = false;
 		for(Resource res : results.listResourcesWithProperty(SH.sourceConstraint).toSet()){
 			
-//			if(cleanedResults.isEmpty()){
-//				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
-//			}
-//			else{
-			// TODO replacing null with specific resource
-			
-				if(!(cleanedResults.contains(null, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(null, SH.message, res.listProperties(SH.message).toList().get(0).getString()))){
-					cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
-					System.out.println(res.toString()+res.getPropertyResourceValue(SH.focusNode)+res.listProperties(SH.message).toList().get(0).getString());
+			if(!cleanedResults.isEmpty()){	
+				for(Resource res2 : cleanedResults.listResourcesWithProperty(SH.sourceConstraint).toSet()){
+					if(cleanedResults.contains(res2, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(res2, SH.message, res.listProperties(SH.message).toList().get(0).getString())){
+						isDuplicate = true;
+					}
 				}
-					
-			//}
+			}
+			
+			if(!isDuplicate){
+				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+				System.out.println(res.toString()+res.getPropertyResourceValue(SH.focusNode)+res.listProperties(SH.message).toList().get(0).getString());
+			}
+			isDuplicate = false;
+		
 		}
 			System.out.println("----");
 		return cleanedResults;
