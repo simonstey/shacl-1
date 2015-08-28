@@ -268,6 +268,7 @@ public class SHACLUtil {
 			while(it.hasNext()) {
 				Statement s = it.next();
 				if(SH.property.equals(s.getPredicate())) {
+					//TODO check here if derivedpropconstraint
 					return SH.PropertyConstraint.inModel(resource.getModel());
 				}
 				else if(SH.argument.equals(s.getPredicate())) {
@@ -433,9 +434,8 @@ public class SHACLUtil {
 			
 			if(!isDuplicate){
 				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+				isDuplicate = false;
 			}
-			isDuplicate = false;
-		
 		}
 			
 		return cleanedResults;

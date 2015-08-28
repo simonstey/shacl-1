@@ -1,0 +1,97 @@
+# baseURI: http://topbraid.org/examples/shaclsquare
+# imports: http://www.w3.org/ns/shacl
+
+# An example SHACL model about rectangles and squares, demonstrating all major
+# features of SHACL with simple examples.
+
+# Contact: Holger Knublauch (holger@topquadrant.com)
+
+@prefix arg: <http://www.w3.org/ns/shacl/arg#> .
+@prefix ex: <http://topbraid.org/examples/shaclsquare#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/>
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# The sh:Graph ----------------------------------------------------------------
+
+<http://topbraid.org/examples/shacldp>
+	a sh:Graph ;
+	sh:shapesGraph <http://www.w3.org/ns/shacl> ;
+	rdfs:label "SHACL Derived Property Example" ;
+	rdfs:comment "A simple example model demonstrating some key features of SHACL." ;
+.
+
+# Classes ---------------------------------------------------------------------
+
+ex:Rectangle
+	a sh:ShapeClass ;
+	rdfs:subClassOf rdfs:Resource ;
+	rdfs:label "Rectangle" ;
+	sh:property [
+		a sh:DerivedPropertyConstraint ;
+		sh:predicate ex:area ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:sparql """
+			SELECT ?area
+			WHERE {
+				?this ex:width ?width .
+				?this ex:height ?height .
+				BIND (?width * ?height AS ?area) .
+			}
+			"""
+	] ;
+	sh:property [
+		sh:predicate ex:height ;
+		sh:datatype xsd:integer ;
+		rdfs:label "check height" ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		rdfs:comment "The height of the Rectangle." ;
+	] ;
+	sh:property [
+		sh:predicate ex:width ;
+		sh:datatype xsd:integer ;
+		rdfs:label "check width" ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		rdfs:comment "The width of the Rectangle." ;
+	] ;
+.
+
+ex:Square
+	a sh:ShapeClass ;
+	rdfs:label "Square" ;
+	rdfs:subClassOf ex:Rectangle ;
+	sh:constraint [
+		sh:message "Width and height of a Square must be equal" ;
+		sh:predicate ex:width ;
+		sh:sparql """
+			SELECT ?this (?this AS ?subject) (?width AS ?object)
+			WHERE {
+				?this ex:width ?width .
+				?this ex:height ?height .
+				FILTER (?width != ?height) .
+			}
+			""" ;
+	] ;
+.
+
+# Example Instances -----------------------------------------------------------
+  
+ex:InvalidSquare
+	a ex:Square ;
+	ex:height 8 ;
+	ex:width 9 ;
+	rdfs:label "Invalid square" ;
+.
+  
+ex:TestRectangle
+	a ex:Rectangle ;
+	ex:height 6 ;
+	ex:width 7 ;
+	rdfs:label "Test rectangle" ;
+.

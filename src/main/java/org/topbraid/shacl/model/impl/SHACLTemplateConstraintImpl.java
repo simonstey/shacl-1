@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.topbraid.shacl.constraints.ConstraintExecutable;
 import org.topbraid.shacl.constraints.TemplateConstraintExecutable;
+import org.topbraid.shacl.model.SHACLArgument;
 import org.topbraid.shacl.model.SHACLFactory;
 import org.topbraid.shacl.model.SHACLTemplate;
 import org.topbraid.shacl.model.SHACLTemplateConstraint;
 import org.topbraid.shacl.util.SHACLUtil;
+import org.topbraid.shacl.vocabulary.SH;
+import org.topbraid.spin.util.JenaDatatypes;
 import org.topbraid.spin.util.JenaUtil;
 
 import com.hp.hpl.jena.enhanced.EnhGraph;

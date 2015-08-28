@@ -1415,7 +1415,14 @@ sh:DerivedPropertyConstraint
 	rdfs:subClassOf sh:PropertyConstraint ;
 	rdfs:label "Derived property constraint" ;
 	rdfs:comment "Enforces a constraint that all values of the property must have a certain shape." ;
-	sh:property [
+	sh:argument [
+		sh:predicate sh:sparql ;
+		sh:datatype xsd:string ;
+		sh:maxCount 1 ;
+		rdfs:label "SPARQL" ;
+		rdfs:comment "The SPARQL query to execute." ;
+	] ;
+	sh:argument [
 		sh:predicate sh:inverseSPARQL  ;
 		sh:datatype xsd:string ;
 		sh:maxCount 1 ;

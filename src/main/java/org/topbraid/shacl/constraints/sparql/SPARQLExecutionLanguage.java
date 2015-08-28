@@ -189,9 +189,19 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		Resource resource = executable.getResource();
 
 		String sparql = JenaUtil.getStringProperty(resource, SH.sparql);
+		
+		if(executable.getTemplateCall() != null){
+			if(JenaUtil.hasIndirectType(executable.getTemplateCall(),SH.DerivedPropertyConstraint)){
+				//fires currently together with other constraints of property
+				System.out.println(constraint.getProperty(SH.sparql).getString());
+			}	
+		}
+		
 		if(sparql == null && executable instanceof TemplateConstraintExecutable) {
 			sparql = createSPARQLFromValidationFunction((TemplateConstraintExecutable)executable);
 		}
+		
+		
 		if(sparql == null) {
 			String message = "Missing " + SH.PREFIX + ":" + SH.sparql.getLocalName() + " of " + SPINLabels.get().getLabel(resource);
 			if(resource.isAnon()) {
@@ -251,6 +261,9 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		QueryExecution qexec = ARQFactory.get().createQueryExecution(query, dataset, bindings);
 
 		long startTime = System.currentTimeMillis();
+		
+		//TODO either normal constraint or derivedpropertyconstraint
+		
 		int violationCount = executeSelectQuery(results, constraint, shape, focusNode, executable, qexec);
 
 		if(SPINStatisticsManager.get().isRecording()) {
