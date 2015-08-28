@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.topbraid.shacl.constraints.ConstraintExecutable;
+import org.topbraid.shacl.constraints.DerivedPropertyConstraintExecutable;
+import org.topbraid.shacl.constraints.NativeConstraintExecutable;
 import org.topbraid.shacl.constraints.TemplateConstraintExecutable;
 import org.topbraid.shacl.model.SHACLArgument;
 import org.topbraid.shacl.model.SHACLFactory;
@@ -45,6 +47,9 @@ public class SHACLTemplateConstraintImpl extends SHACLTemplateCallImpl implement
 					results.add(executable);
 				}
 			}
+		}
+		if(this.getTemplate().equals(SH.DerivedPropertyConstraint)){
+			results.add(new DerivedPropertyConstraintExecutable(this,this.getTemplate()));
 		}
 		return results;
 	}

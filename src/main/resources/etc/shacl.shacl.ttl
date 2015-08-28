@@ -828,6 +828,29 @@ sh:AbstractPropertyConstraint
 	] ;
 .
 
+sh:AbstractDerivedPropertyConstraint
+	a sh:ConstraintTemplate ;
+	rdfs:subClassOf sh:TemplateConstraint ;
+	rdfs:label "Abstract derived property constraint" ;
+	rdfs:comment "superclass for derived property constraints" ;
+	sh:message "Message for Derived Prop Constraint" ;
+	sh:abstract true ;
+	sh:argument [
+		sh:predicate sh:sparql ;
+		sh:datatype xsd:string ;
+		sh:maxCount 1 ;
+		rdfs:label "SPARQL" ;
+		rdfs:comment "The SPARQL query to execute." ;
+	] ;
+	sh:argument [
+		sh:predicate sh:inverseSPARQL  ;
+		sh:datatype xsd:string ;
+		sh:maxCount 1 ;
+		rdfs:label "inverse SPARQL" ;
+		rdfs:comment "The inverse SPARQL query to execute." ;
+	] ;
+.
+
 # Arguments -------------------------------------------------------------------
 
 sh:AbstractArgumentDatatypeConstraint
@@ -1413,22 +1436,9 @@ sh:InversePropertyConstraint
 sh:DerivedPropertyConstraint
 	a sh:ConstraintTemplate ;
 	rdfs:subClassOf sh:PropertyConstraint ;
+	rdfs:subClassOf sh:AbstractDerivedPropertyConstraint;
 	rdfs:label "Derived property constraint" ;
 	rdfs:comment "Enforces a constraint that all values of the property must have a certain shape." ;
-	sh:argument [
-		sh:predicate sh:sparql ;
-		sh:datatype xsd:string ;
-		sh:maxCount 1 ;
-		rdfs:label "SPARQL" ;
-		rdfs:comment "The SPARQL query to execute." ;
-	] ;
-	sh:argument [
-		sh:predicate sh:inverseSPARQL  ;
-		sh:datatype xsd:string ;
-		sh:maxCount 1 ;
-		rdfs:label "inverse SPARQL" ;
-		rdfs:comment "The inverse SPARQL query to execute." ;
-	] ;
 .
 
 sh:ClosedShapeConstraint

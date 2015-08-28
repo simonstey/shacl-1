@@ -23,6 +23,8 @@ public class SH {
 
     public final static Resource AbstractPropertyConstraint = ResourceFactory.createResource(NS + "AbstractPropertyConstraint");
 
+    public final static Resource AbstractDerivedPropertyConstraint = ResourceFactory.createResource(NS + "AbstractDerivedPropertyConstraint");
+    
     public final static Resource AltPath = ResourceFactory.createResource(NS + "AltPath");
     
     public final static Resource Argument = ResourceFactory.createResource(NS + "Argument");

@@ -425,10 +425,12 @@ public class SHACLUtil {
 		for(Resource res : results.listResourcesWithProperty(SH.sourceConstraint).toSet()){
 			if(!cleanedResults.isEmpty()){	
 				for(Resource res2 : cleanedResults.listResourcesWithProperty(SH.sourceConstraint).toSet()){
+					//TODO check if get(0) is available
+					if(!res.listProperties(SH.message).toList().isEmpty()){
 					if(cleanedResults.contains(res2, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(res2, SH.message, res.listProperties(SH.message).toList().get(0).getString())){
 						isDuplicate = true;
 						break;
-					}
+					}}
 				}
 			}
 			
