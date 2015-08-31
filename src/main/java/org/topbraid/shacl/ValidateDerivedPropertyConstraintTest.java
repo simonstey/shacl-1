@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ValidateDerivedPropertyConstraintTest extends TestCase {
-
+	
 	/**
 	 * Loads the SHACL Square example file and validates all constraints. This
 	 * test case can also be used as a starting point for your own custom
@@ -32,9 +32,9 @@ public class ValidateDerivedPropertyConstraintTest extends TestCase {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public void testSHACLNativeRules() throws InterruptedException {
+	public void testSHACLDerivedPropertyConstraints() throws InterruptedException {
 
-		// Load the main data model
+		// Load the main data model	
 		Model dataModel = JenaUtil.createMemoryModel();
 
 		dataModel.read(getClass().getResourceAsStream("/shacldp.shacl.ttl"),

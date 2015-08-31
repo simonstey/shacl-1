@@ -851,6 +851,7 @@ sh:AbstractDerivedPropertyConstraint
 	] ;
 	sh:argument [
 		sh:predicate sh:inverseSPARQL  ;
+		sh:optional true ;
 		sh:datatype xsd:string ;
 		sh:maxCount 1 ;
 		rdfs:label "inverse SPARQL" ;

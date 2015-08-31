@@ -42,15 +42,16 @@ public class SHACLTemplateConstraintImpl extends SHACLTemplateCallImpl implement
 		for(Resource cls : JenaUtil.getAllSuperClassesStar(type)) {
 			SHACLTemplate template = SHACLFactory.asTemplate(cls);
 			TemplateConstraintExecutable executable = new TemplateConstraintExecutable(this, template);
-			if(template.getSPARQL() != null || executable.getValidationFunction() != null) {
+			if(template.getSPARQL() != null || executable.getValidationFunction() != null || cls.equals(SH.AbstractDerivedPropertyConstraint)) {
 				if(executable.isComplete()) {
 					results.add(executable);
 				}
+		
 			}
 		}
-		if(this.getTemplate().equals(SH.DerivedPropertyConstraint)){
-			results.add(new DerivedPropertyConstraintExecutable(this,this.getTemplate()));
-		}
+//		if(this.getTemplate().equals(SH.DerivedPropertyConstraint)){
+//			results.add(new DerivedPropertyConstraintExecutable(this,this.getTemplate()));
+//		}
 		return results;
 	}
 }
