@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.topbraid.shacl.arq.SHACLFunctions;
 import org.topbraid.shacl.constraints.ModelConstraintValidator;
 import org.topbraid.shacl.util.ModelPrinter;
@@ -29,9 +30,11 @@ public class ValidateNativeRuleTest extends TestCase {
 	 * Loads the SHACL Square example file and validates all constraints. This
 	 * test case can also be used as a starting point for your own custom
 	 * applications.
+	 * @throws InterruptedException 
 	 * 
 	 * @throws FileNotFoundException
 	 */
+	
 	public void testSHACLNativeRules() throws InterruptedException {
 
 		// Load the main data model

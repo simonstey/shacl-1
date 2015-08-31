@@ -47,7 +47,7 @@ ex:Rectangle
 		rdfs:label "adding second height attribute" ;
 		sh:sparql """
 			CONSTRUCT {
-				?this ex:height 4.
+				?this ex:height 4 .
 			}
 			WHERE {
 				?this ex:width ?width .
@@ -131,29 +131,4 @@ ex:TestRectangle
 ex:PersonWithEmail
 	a schema:Person ;
 	schema:email 1 ;
-.
-
-
-# Templates -------------------------------------------------------------------
-  
-ex:PositivePropertyValueConstraint
-	a sh:ConstraintTemplate ;
-	rdfs:subClassOf sh:TemplateConstraint ;
-	rdfs:label "Positive property value constraint" ;
-	rdfs:comment "A template that can be used to define a SHACL constraint on a given property (arg:property) to make sure that the values of that property are > 0." ;
-	sh:labelTemplate "Values of property {?property} must be > 0" ;
-	sh:argument [
-		sh:predicate arg:property ;
-		sh:valueClass rdf:Property ;
-		rdfs:label "property" ;
-		rdfs:comment "The property to constrain (e.g. ex:width or ex:height)." ;
-	] ;
-	sh:message "Property {?property} must only have positive values, but found {?object}" ;
-	sh:sparql """
-		SELECT ?this (?this AS ?subject) (?property AS ?predicate) ?object ?property
-		WHERE {
-			?this ?property ?object .
-			FILTER (?object <= 0) .
-		}
-		""" ;
 .

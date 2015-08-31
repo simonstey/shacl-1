@@ -422,26 +422,36 @@ public class SHACLUtil {
 	public static Model removeDuplicateResultMessages(Model results) {
 		Model cleanedResults = ModelFactory.createDefaultModel();
 		boolean isDuplicate = false;
-		for(Resource res : results.listResourcesWithProperty(SH.sourceConstraint).toSet()){
+		
+		for(Resource res : results.listResourcesWithProperty(SH.focusNode).toSet()){
 			if(!cleanedResults.isEmpty()){	
-				for(Resource res2 : cleanedResults.listResourcesWithProperty(SH.sourceConstraint).toSet()){
-					//TODO check if get(0) is available
+				for(Resource res2 : cleanedResults.listResourcesWithProperty(SH.focusNode).toSet()){
 					if(!res.listProperties(SH.message).toList().isEmpty()){
-					if(cleanedResults.contains(res2, SH.focusNode, res.getPropertyResourceValue(SH.focusNode)) && cleanedResults.contains(res2, SH.message, res.listProperties(SH.message).toList().get(0).getString())){
-						isDuplicate = true;
-						break;
-					}}
+		
+						String oldMessage = res.listProperties(SH.message).toList().get(0).getString();
+						String newMessage = res2.listProperties(SH.message).toList().get(0).getString();
+		
+						Resource oldFocusnode = res.listProperties(SH.focusNode).toList().get(0).getResource();
+						Resource newFocusnode = res2.listProperties(SH.focusNode).toList().get(0).getResource();
+
+						if(oldMessage.equals(newMessage) && oldFocusnode.equals(newFocusnode)){
+							isDuplicate = true;
+							break;
+						}
+					}
 				}
-			}
-			
-			if(!isDuplicate){
-				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+				if(!isDuplicate) {
+					if(!cleanedResults.contains(res, null)){
+						cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+					}
+				}
 				isDuplicate = false;
 			}
-		}
-			
-		return cleanedResults;
-		
+			else {
+				cleanedResults.add(results.listStatements(res, null, (RDFNode)null));
+			}
+		}	
+		return cleanedResults;	
 	}
 	
 	/**

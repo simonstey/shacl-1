@@ -586,6 +586,13 @@ sh:Constraint
 		rdfs:label "severity" ;
 		rdfs:comment "Specifies the severity to use for any constraint violation produced by this constraint. Defaults to sh:Error for native constraints. For template constraints it uses the severity of the template by default." ;
 	] ;
+	# sh:property [
+		# sh:predicate sh:fix ;
+		# sh:maxCount 1 ;
+		# sh:valueClass sh:Rule ;
+		# rdfs:label "fix rule" ;
+		# rdfs:comment "Specifies the fix to be performed for any constraint violation produced by this constraint." ;
+	# ] ;
 .
 
 sh:NativeConstraint
@@ -2089,7 +2096,7 @@ sh:extends a rdf:Property ; rdfs:label "extends" .
 sh:filterShape a rdf:Property ; rdfs:label "filter shape" .
 
 sh:final a rdf:Property ; rdfs:label "final" .
-
+sh:fix a rdf:Property ; rdfs:label "fix" .
 sh:focusNode a rdf:Property ; rdfs:label "focus node" .
 sh:hasValue a rdf:Property ; rdfs:label "has value" .
 sh:ignoredProperties a rdf:Property ; rdfs:label "ignored properties" .
