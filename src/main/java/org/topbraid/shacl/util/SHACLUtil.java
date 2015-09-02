@@ -181,6 +181,7 @@ public class SHACLUtil {
 		QueryExecution qexec = ARQFactory.get().createQueryExecution(query, unionModel);
 		qexec.execConstruct(resultModel);
 		qexec.close();
+		System.out.println(resultModel.listStatements().toList());
 		return resultModel;
 	}
 	

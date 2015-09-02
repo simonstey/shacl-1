@@ -18,7 +18,6 @@
 	rdfs:comment "The vocabulary defining the Shapes Constraint Language (SHACL)." ;
 .
 
-
 # Declaration of the required RDFS terms --------------------------------------
 
 rdfs:Resource

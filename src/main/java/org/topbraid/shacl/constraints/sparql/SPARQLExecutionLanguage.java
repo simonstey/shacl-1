@@ -16,6 +16,7 @@ import java.util.Set;
 
 
 
+
 import org.topbraid.shacl.constraints.ConstraintExecutable;
 import org.topbraid.shacl.constraints.ExecutionLanguage;
 import org.topbraid.shacl.constraints.ExecutionLanguageSelector;
@@ -59,6 +60,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 
 /**
@@ -265,7 +267,24 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		//TODO either normal constraint or derivedpropertyconstraint
 		
 		int violationCount = executeSelectQuery(results, constraint, shape, focusNode, executable, qexec);
-
+//       // System.out.println("Results: "+results.size() + "--"+violationCount);
+//		if(shape.toString().contains("MyShape"))
+//			System.out.println(resource.toString());
+//		if(resource.toString().equals("http://www.w3.org/ns/shacl#AbstractValueClassPropertyConstraint")){
+//		//if(violationCount>0){
+//		System.out.println(resource.toString());
+//				System.out.println(qexec.getQuery().toString());
+////		
+////			System.out.println("ValueClass:"+bindings.get("valueClass"));
+////		System.out.println("Value:"+bindings.get("value"));
+//////			Model temp = qexec.getDataset().getNamedModel(shapesGraphURI.toString());
+//////			for(Resource res: JenaUtil.getAllTypes(temp.listObjectsOfProperty(SH.scope).toList().get(0).asResource())){
+//////				System.out.println(JenaUtil.hasIndirectType(temp.listObjectsOfProperty(SH.scope).toList().get(0).asResource(), res));
+//////			}
+//////			System.out.println(SPINLabels.get().getLabel(shape));
+//		}
+			
+		
 		if(SPINStatisticsManager.get().isRecording()) {
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;
@@ -298,6 +317,7 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 
 			Resource severity = executable.getSeverity();
 			RDFNode selectMessage = sol.get(SH.messageVar.getVarName());
+			RDFNode test = sol.get("valueClass");
 			if(JenaDatatypes.TRUE.equals(sol.get("error"))) {
 				severity = SH.FatalError;
 				String message = "Constraint " + SPINLabels.get().getLabel(executable.getResource());
@@ -316,6 +336,10 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 			vio.addProperty(SH.sourceConstraint, constraint);
 			vio.addProperty(SH.sourceShape, shape);
 
+			if(test != null){
+				vio.addProperty(SH.predicate, test);
+			}
+			
 			if(selectMessage != null) {
 				vio.addProperty(SH.message, selectMessage);
 			}

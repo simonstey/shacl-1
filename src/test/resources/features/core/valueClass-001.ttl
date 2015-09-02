@@ -6,7 +6,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<>
+<http://example.org/>
 	a sh:Graph ;
 	sh:shapesGraph <http://www.w3.org/ns/shacl> ;
 .

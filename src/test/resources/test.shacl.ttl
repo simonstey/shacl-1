@@ -1,0 +1,137 @@
+# baseURI: http://topbraid.org/examples/test
+# imports: http://www.w3.org/ns/shacl
+
+
+# Contact: Holger Knublauch (holger@topquadrant.com)
+
+@prefix arg: <http://www.w3.org/ns/shacl/arg#> .
+@prefix ex: <http://topbraid.org/examples/test#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/>
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# The sh:Graph ----------------------------------------------------------------
+
+<http://topbraid.org/examples/test>
+	a sh:Graph ;
+	sh:shapesGraph <http://www.w3.org/ns/shacl> ;
+	rdfs:label "Membership Count Example" ;
+	rdfs:comment "Testing ClassMembershipCount." ;
+.
+
+  ex:Person rdf:type rdfs:Class .  
+  
+  ex:Enrico rdf:type ex:Person . ex:Diego rdf:type ex:Person . 
+  ex:Alessandro rdf:type ex:Person . ex:Sergio rdf:type ex:Person . 
+  ex:John rdf:type ex:Person . ex:Maurizio rdf:type ex:Person .
+  
+ ex:ClassMembershipCountTemplateConstraint
+	a sh:ConstraintTemplate ;
+	rdfs:subClassOf sh:TemplateConstraint ;
+	rdfs:label "Example Template" ;
+	rdfs:comment "Enforces a constraint on the cardinality of the number of occurrences of instances of a given type using minCount and maxCount. By default, given graph may have 0 to unlimited number of instances of a given type" ;
+	sh:argument [
+		sh:predicate ex:type ;
+		sh:valueClass rdfs:Resource ;
+	] ;
+	sh:argument [
+		sh:predicate sh:minCount ;
+		sh:defaultValue 0 ;
+		sh:optional true ;
+		sh:datatype xsd:integer ;
+		rdfs:label "min count" ;
+		rdfs:comment "The minimum number of instances of defined type required. Defaults to 0." ;
+	] ;  
+	sh:argument [
+		sh:predicate sh:maxCount ;
+		sh:optional true ;
+		sh:datatype xsd:integer ;
+		rdfs:label "max count" ;
+		rdfs:comment "The maximum number of instances of defined type required. Defaults to unlimited." ;
+	] ;
+	sh:message "Required value count [{?minCount}..{?maxCount}] but found {?count}" ;
+	sh:sparql """
+		SELECT ?type (?type AS ?subject) ?count ?minCount ?maxCount
+		WHERE {
+			BIND (sh:instanceCount(?type) AS ?count) .
+			FILTER ((?count < ?minCount) || (bound(?maxCount) && (?count > ?maxCount))) .
+		}
+		""" ;
+.
+  
+ex:MyShape
+    a sh:Shape ;
+    sh:scope [
+        a sh:PropertyScope  ;
+        sh:predicate rdf:type ;
+    ] ;
+    sh:constraint [
+        a ex:ClassMembershipCountTemplateConstraint ;
+        ex:type ex:Person ;
+        sh:minCount 3 ;
+        sh:maxCount 3 ;
+    ] .
+  
+ sh:instanceCount
+	a sh:Function ;
+	rdfs:label "instance count" ;
+	rdfs:comment "Gets the number of instances of a given type (?arg1). The result is the number of matches of (?s, ?a, ?arg1)." ;
+	sh:argument [
+		sh:predicate sh:arg1 ;
+		sh:valueClass rdfs:Resource ;
+		rdfs:comment "The subject resource." ;
+	] ;
+	sh:returnType xsd:integer ;
+	sh:sparql """
+		SELECT ((COUNT(?s)) AS ?result)
+		WHERE {
+			?s a ?arg1 .
+		}
+		""" ;
+.
+ 
+ 
+ # sh:Scope
+	# a rdfs:Class ;
+	# rdfs:subClassOf rdfs:Resource ;
+	# rdfs:label "Scope" ;
+	# rdfs:comment "An abstract superclass of scopes. Scopes are either template calls or native scopes with an executable body." ;
+	# sh:abstract true ;
+# .
+
+# sh:ScopeTemplate
+	# a sh:ShapeClass ;
+	# rdfs:subClassOf sh:Template ;
+	# rdfs:label "Scope template" ;
+	# rdfs:comment "A template that is used to compute a scope." ;
+# .
+
+# sh:TemplateScope
+	# a sh:ScopeTemplate ;
+	# rdfs:subClassOf sh:Scope ;
+	# rdfs:label "Scope constraint" ;
+	# rdfs:comment "A scope that is instantiating a template." ;
+	# sh:abstract true ;
+# .
+
+# sh:PropertyScope
+	# a sh:ScopeTemplate ;
+	# rdfs:subClassOf sh:TemplateScope ;
+	# rdfs:label "Property scope" ;
+	# rdfs:comment "A scope that includes all subjects that have at least one value for a given predicate." ;
+	# sh:argument [
+		# sh:predicate sh:predicate ;
+		# sh:valueClass rdf:Property ;
+		# rdfs:label "predicate" ;
+		# rdfs:comment "The Property to look for." ;
+	# ] ;
+	# sh:sparql """
+		# SELECT DISTINCT ?this
+		# WHERE {
+			# ?this ?predicate ?any .
+		# }
+		# """ ;
+# .
