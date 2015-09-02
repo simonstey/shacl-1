@@ -37,7 +37,7 @@ public class ValidateDerivedPropertyConstraintTest extends TestCase {
 		// Load the main data model	
 		Model dataModel = JenaUtil.createMemoryModel();
 
-		dataModel.read(getClass().getResourceAsStream("/shacldp.shacl.ttl"),
+		dataModel.read(getClass().getResourceAsStream("/features/core/scope-002.ttl"),
 				"urn:dummy", FileUtils.langTurtle);
 
 		// Load the shapes Model (here, includes the dataModel because that has
