@@ -17,6 +17,7 @@ import java.util.Set;
 
 
 
+
 import org.topbraid.shacl.constraints.ConstraintExecutable;
 import org.topbraid.shacl.constraints.ExecutionLanguage;
 import org.topbraid.shacl.constraints.ExecutionLanguageSelector;
@@ -60,6 +61,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
@@ -220,7 +222,6 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 
 		String queryString = ARQFactory.get().createPrefixDeclarations(resource.getModel()) + sparql;
 
-
 		Query query;
 		try {
 			query = ARQFactory.get().createQuery(queryString);
@@ -267,23 +268,6 @@ public class SPARQLExecutionLanguage implements ExecutionLanguage {
 		//TODO either normal constraint or derivedpropertyconstraint
 		
 		int violationCount = executeSelectQuery(results, constraint, shape, focusNode, executable, qexec);
-//       // System.out.println("Results: "+results.size() + "--"+violationCount);
-//		if(shape.toString().contains("MyShape"))
-//			System.out.println(resource.toString());
-//		if(resource.toString().equals("http://www.w3.org/ns/shacl#AbstractValueClassPropertyConstraint")){
-//		//if(violationCount>0){
-//		System.out.println(resource.toString());
-//				System.out.println(qexec.getQuery().toString());
-////		
-////			System.out.println("ValueClass:"+bindings.get("valueClass"));
-////		System.out.println("Value:"+bindings.get("value"));
-//////			Model temp = qexec.getDataset().getNamedModel(shapesGraphURI.toString());
-//////			for(Resource res: JenaUtil.getAllTypes(temp.listObjectsOfProperty(SH.scope).toList().get(0).asResource())){
-//////				System.out.println(JenaUtil.hasIndirectType(temp.listObjectsOfProperty(SH.scope).toList().get(0).asResource(), res));
-//////			}
-//////			System.out.println(SPINLabels.get().getLabel(shape));
-//		}
-			
 		
 		if(SPINStatisticsManager.get().isRecording()) {
 			long endTime = System.currentTimeMillis();

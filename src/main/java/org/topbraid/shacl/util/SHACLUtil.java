@@ -181,10 +181,8 @@ public class SHACLUtil {
 		QueryExecution qexec = ARQFactory.get().createQueryExecution(query, unionModel);
 		qexec.execConstruct(resultModel);
 		qexec.close();
-		System.out.println(resultModel.listStatements().toList());
 		return resultModel;
 	}
-	
 	
 	/**
 	 * Creates an includes Model for a given input Model.
@@ -516,6 +514,29 @@ public class SHACLUtil {
 		return ModelFactory.createModelForGraph(new MultiUnion(new Graph[] {
 				model.getGraph(),
 				SHACLUtil.createDefaultValueTypesModel(model).getGraph()
+		}));
+	}
+	
+	/**
+	 * Adds only required type definitions to a model. Using this method
+	 * allows to keep e.g. the data model and shacl model seperate.
+	 * @param model  the data model
+	 * @param shapesModel  the model containing default value types definitions
+	 * @return true if SHACL is present
+	 */
+	public static Model withDefaultValueTypeInferences(Model model, Model shapesModel) {
+		
+		Model defaultValueTypesModel = JenaUtil.createMemoryModel();
+		int i = 0;
+		for(Statement s : SHACLUtil.createDefaultValueTypesModel(shapesModel).listStatements().toList()){
+			if(model.containsResource(s.getSubject()))
+				defaultValueTypesModel.add(s);
+			i++;
+		}
+		System.out.println("added triple"+i);
+		return ModelFactory.createModelForGraph(new MultiUnion(new Graph[] {
+				model.getGraph(),
+				defaultValueTypesModel.getGraph()
 		}));
 	}
 }

@@ -15,7 +15,7 @@
 
 ex:MyShape
 	a sh:Shape ;
-	sh:property [
+	sh:property [ 
 		sh:predicate ex:value ;
 		sh:valueClass ex:SuperClass ;
 	] ;

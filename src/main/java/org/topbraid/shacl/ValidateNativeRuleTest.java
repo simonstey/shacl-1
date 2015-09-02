@@ -53,6 +53,9 @@ public class ValidateNativeRuleTest extends TestCase {
 
 		Model shapesModel = ModelFactory.createModelForGraph(unionGraph);
 
+		dataModel = SHACLUtil.withDefaultValueTypeInferences(dataModel,shapesModel);
+		shapesModel =  SHACLUtil.withDefaultValueTypeInferences(shapesModel);
+		
 		// Make sure all sh:Functions are registered
 		SHACLFunctions.registerFunctions(shapesModel);
 

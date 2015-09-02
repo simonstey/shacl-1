@@ -36,7 +36,7 @@ public class ValidateClassMembershipCountConstraintTest extends TestCase {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	public void testSHACLDerivedPropertyConstraints() throws InterruptedException {
+	public void testClassMembershipCountConstraints() throws InterruptedException {
 
 		// Load the main data model	
 		Model dataModel = JenaUtil.createMemoryModel();
@@ -44,6 +44,7 @@ public class ValidateClassMembershipCountConstraintTest extends TestCase {
 		dataModel.read(getClass().getResourceAsStream("/features/core/valueClass-001.ttl"),
 				"urn:dummy", FileUtils.langTurtle);
 
+		
 		// Load the shapes Model (here, includes the dataModel because that has
 		// templates in it)
 		Model shaclModel = JenaUtil.createDefaultModel();
@@ -53,7 +54,10 @@ public class ValidateClassMembershipCountConstraintTest extends TestCase {
 				shaclModel.getGraph(), dataModel.getGraph() });
 
 		Model shapesModel = ModelFactory.createModelForGraph(unionGraph);
-		shapesModel = SHACLUtil.withDefaultValueTypeInferences(shapesModel);
+	
+		dataModel = SHACLUtil.withDefaultValueTypeInferences(dataModel,shapesModel);
+		shapesModel =  SHACLUtil.withDefaultValueTypeInferences(shapesModel);
+		
 		// Make sure all sh:Functions are registered
 		SHACLFunctions.registerFunctions(shapesModel);
 
@@ -62,7 +66,7 @@ public class ValidateClassMembershipCountConstraintTest extends TestCase {
 		// (here, using a temporary URI for the shapes graph)
 		URI shapesGraphURI = URI.create("urn:x-shacl-shapes-graph:"
 				+ UUID.randomUUID().toString());
-
+		
 		// initializes the default model of the dataset (which will be queried)
 		Dataset dataset = ARQFactory.get().getDataset(dataModel);
 		dataset.addNamedModel(shapesGraphURI.toString(), shapesModel);
@@ -70,12 +74,6 @@ public class ValidateClassMembershipCountConstraintTest extends TestCase {
 		// Run the validator and print results
 		Model results = ModelConstraintValidator.get().validateModel(dataset,
 				shapesGraphURI, null, false, null);
-
-
-		
-//		for(Resource res: JenaUtil.getAllTypes(shapesModel.listObjectsOfProperty(SH.scope).toList().get(0).asResource())){
-			System.out.println(shapesModel.listStatements(shapesModel.listObjectsOfProperty(ResourceFactory.createProperty("http://example.org/MyShape"), SH.property).toList().get(0).asResource(),null,(RDFNode)null).toList());
-//		}
 		
 		System.out.println(ModelPrinter.get().print(results));
 

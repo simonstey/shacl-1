@@ -174,9 +174,6 @@ class SPARQLSubstitutions {
 		if(JenaUtil.hasIndirectType(shape, RDFS.Class)) {
 			String varName = "?CLASS_VAR";
 			scopes.add("        " + varName + " <" + RDFS.subClassOf + ">* <" + shape + "> .\n            ?this a " + varName + " .\n");
-			if(shape.equals(SH.Shape))
-				System.out.println("        " + varName + " <" + RDFS.subClassOf + ">* <" + shape + "> .\n            ?this a " + varName + " .\n");
-		
 		}
 		
 		for(Resource cls : JenaUtil.getResourceProperties(shape, SH.scopeClass)) {
