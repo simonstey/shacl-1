@@ -204,6 +204,7 @@ class SPARQLSubstitutions {
 				}
 			}
 		}
+		
 	}
 	
 	

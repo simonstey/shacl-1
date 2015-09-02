@@ -80,6 +80,19 @@ ex:Square
 	] ;
 .
 
+ex:MyShape
+	a sh:Shape ;
+	sh:scope [
+		a sh:PropertyScope ;
+		sh:predicate ex:myProperty ;
+	] ;
+	sh:property [
+		sh:predicate ex:myProperty ;
+		sh:maxCount 1 ;
+	] ;
+.
+
+
 # Example Instances -----------------------------------------------------------
   
 ex:InvalidSquare

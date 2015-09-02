@@ -98,6 +98,7 @@ public class ModelConstraintValidator {
 				executeRuleForShape(dataset, shapesGraphURI, rule, shape, results, monitor);
 			}
 		}
+		long size = 0;
 		for(Resource shape : map.keySet()) {
 			for(SHACLConstraint constraint : map.get(shape)) {
 				validateConstraintForShape(dataset, shapesGraphURI, minSeverity, constraint, shape, results, monitor);
@@ -105,6 +106,10 @@ public class ModelConstraintValidator {
 					monitor.worked(1);
 					if(monitor.isCanceled()) {
 						throw new InterruptedException();
+					}
+					if(size != results.size()){
+						monitor.subTask("results changed: "+shape.toString());
+						size = results.size();
 					}
 				}
 			}
@@ -271,7 +276,7 @@ public class ModelConstraintValidator {
 	
 	
 	private void validateConstraintForShape(Dataset dataset, URI shapesGraphURI, Resource minSeverity, SHACLConstraint constraint, Resource shape, Model results, ProgressMonitor monitor) {
-		System.out.println("Constraint:  "+constraint.toString() + " "+constraint.getExecutables());
+//		System.out.println("Constraint:  "+constraint.toString() + " "+constraint.getExecutables());
 		for(ConstraintExecutable executable : constraint.getExecutables()) {
 			Resource severity = executable.getSeverity();
 			if(minSeverity == null || minSeverity.equals(severity) || JenaUtil.hasSuperClass(severity, minSeverity)) {
